@@ -32,7 +32,7 @@ ScopeSeed is intended to be project-agnostic. A Flutter app, CLI, web service, g
 ### Required
 
 - **Spec Kit** in the target project.
-- **OpenCode** for the current command/skill integration shipped in this repository.
+- **OpenCode** for the plugin/command integration shipped in this repository.
 
 ### Optional
 
@@ -48,14 +48,13 @@ The core workflow must still work without those optional integrations. When rese
 
 ## Quick start
 
-Copy the ScopeSeed OpenCode command and skill files into a project that already has Spec Kit installed:
+The recommended installation is the OpenCode package plugin:
 
-```text
-.opencode/commands/scopeseed*.md
-.opencode/skills/scopeseed/
+```bash
+opencode plugin add github:s3tupw1zard/ScopeSeed
 ```
 
-Then start with:
+Then start OpenCode in a repository that already has Spec Kit installed and run:
 
 ```text
 /scopeseed bootstrap
@@ -81,7 +80,20 @@ For an existing Spec Kit project:
 
 ScopeSeed derives a feature registry from the existing specs without treating file existence alone as proof that a feature is complete.
 
-See [Getting started](docs/getting-started.md) and the [command reference](docs/commands.md) for the detailed flow.
+### Updating ScopeSeed
+
+Package-plugin installations can be checked and updated through OpenCode:
+
+```bash
+opencode plugin check
+opencode plugin update
+```
+
+The GitHub installation above follows the repository rather than pinning a specific commit, so updating does not require copying ScopeSeed files into every project again.
+
+The older project-local installer is still available for development and fallback use. See [Installation](docs/installation.md) for plugin, private-repository, update, and file-based installation details.
+
+See [Getting started](docs/getting-started.md) and the [command reference](docs/commands.md) for the detailed workflow.
 
 ## Project files
 
