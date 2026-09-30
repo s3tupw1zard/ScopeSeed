@@ -1,0 +1,21 @@
+{
+  // Optional example. Adjust the schema version to the OMO-Slim version you use.
+  "$schema": "https://unpkg.com/oh-my-opencode-slim@2.2.25/oh-my-opencode-slim.schema.json",
+  "disabled_agents": [],
+  "image_routing": "auto",
+  "agents": {
+    "orchestrator": {
+      "skills_include_local": true,
+      "skills_add": ["scopeseed"]
+    },
+    "explorer": {},
+    "librarian": {
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow"
+      }
+    },
+    "oracle": {},
+    "designer": {}
+  }
+}
