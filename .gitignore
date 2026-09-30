@@ -1,0 +1,18 @@
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local agent/runtime state
+.opencode/.cache/
+.opencode/logs/
+
+# ScopeSeed working state that should not be committed by default
+.scopeseed/tmp/
+.scopeseed/cache/
+
+# Common generated files
+coverage/
+build/
+dist/

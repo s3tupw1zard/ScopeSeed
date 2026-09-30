@@ -1,0 +1,41 @@
+version: 1
+
+paths:
+  project: specs/PROJECT.md
+  features: specs/FEATURES.md
+  rejected_features: specs/REJECTED_FEATURES.md
+  specs: specs
+
+feature_ids:
+  accepted_prefix: F
+  rejected_prefix: R
+  width: 3
+
+workflow:
+  clarification: adaptive-single-question
+  auto_continue_to_next_feature: true
+  planning_requires_gapless: true
+  implementation_requires_planned: true
+
+categories:
+  # Default ordering hints. ScopeSeed should omit irrelevant categories and may
+  # introduce clearer project-specific categories while preserving dependency order.
+  - { priority: 10, name: "Foundation & Architecture" }
+  - { priority: 20, name: "Authentication & Identity" }
+  - { priority: 30, name: "Authorization & Permissions" }
+  - { priority: 40, name: "Data & Persistence" }
+  - { priority: 50, name: "Integrations & Protocols" }
+  - { priority: 60, name: "Core Product Features" }
+  - { priority: 70, name: "Navigation & Application Shell" }
+  - { priority: 80, name: "Realtime & Background Work" }
+  - { priority: 90, name: "Content & Media" }
+  - { priority: 100, name: "Files & Transfers" }
+  - { priority: 110, name: "Search & Discovery" }
+  - { priority: 120, name: "Administration" }
+  - { priority: 130, name: "UI & UX" }
+  - { priority: 140, name: "Accessibility" }
+  - { priority: 150, name: "Platform & Compatibility" }
+  - { priority: 160, name: "Security & Privacy" }
+  - { priority: 170, name: "Observability & Diagnostics" }
+  - { priority: 180, name: "Migration & Compatibility" }
+  - { priority: 190, name: "Operations & Release" }
