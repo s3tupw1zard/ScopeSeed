@@ -1,0 +1,35 @@
+{
+  "name": "opencode-scopeseed",
+  "version": "2026.1.0-dev.1",
+  "description": "Project-level feature discovery and lifecycle orchestration over Spec Kit for OpenCode.",
+  "type": "module",
+  "main": "./plugin/index.js",
+  "exports": "./plugin/index.js",
+  "license": "GPL-2.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s3tupw1zard/ScopeSeed.git"
+  },
+  "homepage": "https://github.com/s3tupw1zard/ScopeSeed#readme",
+  "bugs": {
+    "url": "https://github.com/s3tupw1zard/ScopeSeed/issues"
+  },
+  "keywords": [
+    "opencode",
+    "plugin",
+    "spec-kit",
+    "specification-driven-development",
+    "feature-discovery",
+    "project-planning"
+  ],
+  "files": [
+    "plugin/",
+    ".opencode/skills/scopeseed/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node --check plugin/index.js",
+    "pack:check": "npm pack --dry-run"
+  }
+}
