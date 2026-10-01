@@ -1,8 +1,8 @@
 ---
 name: scopeseed
-description: Project-level feature discovery and lifecycle orchestration over Spec Kit, using human-readable registries, evidence-first research, adaptive clarification, interactive decisions, and resumable status gates.
+description: Project-level feature discovery and lifecycle orchestration over Spec Kit, using human-readable registries, evidence-first research, adaptive clarification, interactive decisions, config reconciliation, and resumable status gates.
 metadata:
-  version: 2026.1.0-dev.4
+  version: 2026.1.0-dev.5
   updated: 2026-10-01
 ---
 
@@ -14,7 +14,7 @@ ScopeSeed turns an incomplete project idea into an ordered, researched feature r
 
 ScopeSeed is project-agnostic. Do not assume a language, framework, platform, product type, or agent stack unless the target repository establishes it.
 
-Spec Kit remains the underlying feature specification/planning workflow. ScopeSeed adds project bootstrap, feature discovery, accepted/rejected feature memory, lifecycle ordering, interactive decision handling, and resumable project-level orchestration.
+Spec Kit remains the underlying feature specification/planning workflow. ScopeSeed adds project bootstrap, feature discovery, accepted/rejected feature memory, lifecycle ordering, interactive decision handling, configuration reconciliation, and resumable project-level orchestration.
 
 ## Durable state
 
@@ -55,6 +55,16 @@ Resolve ambiguous external identities before deep research. Never guess which si
 
 Read `references/research-and-disambiguation.md`.
 
+## Configuration preflight
+
+Before every ScopeSeed action, inspect `.scopeseed/config.yaml` and reconcile it against the installed ScopeSeed version's canonical config template.
+
+Automatic reconciliation is additive only: add missing mapping keys, preserve existing scalar values, preserve existing lists as a whole, keep unknown/custom keys, and avoid unrelated formatting churn. Never silently repair invalid YAML, overwrite an incompatible type, or downgrade a config whose schema version is newer than the installed ScopeSeed version.
+
+For older configs where `maintenance.auto_sync_config` is absent, treat automatic synchronization as enabled. If it is explicitly `false`, ordinary actions report config drift without mutating it when safe to continue.
+
+Read `references/configuration.md` for the full migration rules.
+
 ## Interaction and dialogs
 
 Read `.scopeseed/config.yaml` and apply the interaction defaults from `references/interaction.md` when the configuration does not specify them.
@@ -82,7 +92,17 @@ If no ScopeSeed state exists:
 7. derive project-appropriate feature categories;
 8. start initial feature discovery.
 
-Do not overwrite established project decisions when adopting ScopeSeed in an existing repository. Bootstrap never plans or implements features.
+If ScopeSeed state already exists, run the configuration preflight instead of replacing established config/project decisions. Bootstrap never plans or implements features.
+
+## Configuration synchronization
+
+Action: `config-sync`
+
+Explicitly reconcile `.scopeseed/config.yaml` against the installed ScopeSeed canonical template, even when `maintenance.auto_sync_config` is `false`.
+
+Follow `references/configuration.md`: perform only conservative missing-key/schema migration, preserve all existing user values/custom keys/lists, update the schema version only after a successful migration, and report any invalid YAML, type conflict, or newer-schema condition instead of guessing.
+
+This action does not discover, clarify, plan, or implement features.
 
 ## Feature discovery
 
@@ -186,7 +206,7 @@ Repository explorers, external-documentation researchers, design reviewers, inde
 
 ## Safety and mutations
 
-Bootstrap, discovery, feature addition, clarification, verification, and planning must not commit, push, merge, switch branches, deploy, or bypass repository governance unless the user explicitly authorizes those separate actions.
+Bootstrap, config synchronization, discovery, feature addition, clarification, verification, and planning must not commit, push, merge, switch branches, deploy, or bypass repository governance unless the user explicitly authorizes those separate actions.
 
 Implementation may edit production files because the user explicitly invoked it, but still obeys repository permissions, confirmations, and safety rules.
 
@@ -203,4 +223,4 @@ At the end of an action report concisely:
 - unresolved decision/research limitation;
 - natural next `/scopeseed ...` command when the workflow stopped.
 
-The repository files are the detailed record.
+For automatic config preflight, report it only when the config changed or safe reconciliation was blocked. The repository files are the detailed record.
