@@ -6,22 +6,9 @@ assert.equal(plugin.id, "scopeseed", "plugin must expose stable id 'scopeseed'")
 assert.equal(typeof plugin.setup, "function", "plugin must expose setup(ctx)")
 
 let commandDefinition
-let skillDefinition
+let prompted
 
 const ctx = {
-  skill: {
-    async transform(callback) {
-      callback({
-        get() {
-          return undefined
-        },
-        add(definition) {
-          skillDefinition = definition
-        },
-      })
-      return { async dispose() {} }
-    },
-  },
   command: {
     async transform(callback) {
       callback({
@@ -33,14 +20,25 @@ const ctx = {
     },
   },
   session: {
-    async prompt() {},
+    async prompt(input) {
+      prompted = input
+    },
   },
 }
 
 await plugin.setup(ctx)
 
-assert.equal(skillDefinition?.id, "scopeseed")
 assert.equal(commandDefinition?.name, "scopeseed")
 assert.equal(typeof commandDefinition?.execute, "function")
 
-console.log("ScopeSeed OpenCode v2 plugin shape OK")
+await commandDefinition.execute({
+  sessionID: "session-test",
+  prompt: { text: "/scopeseed bootstrap" },
+  delivery: "steer",
+})
+
+assert.equal(prompted?.sessionID, "session-test")
+assert.match(prompted?.text ?? "", /bootstrap/)
+assert.match(prompted?.text ?? "", /ScopeSeed/)
+
+console.log("ScopeSeed OpenCode v2 command plugin shape OK")
