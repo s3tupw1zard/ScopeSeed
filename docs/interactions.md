@@ -14,6 +14,18 @@ Stopping discovery deliberately leaves no record for the current candidate, so i
 
 With the default configuration, discovery continues immediately after you accept or reject a candidate. This makes it practical to review a long list of missing features without repeatedly typing `/scopeseed discover`.
 
+When `workflow.review_related_features` is enabled, accepting a candidate also triggers a short feature-boundary review before broad discovery resumes. Independent adjacent features use the same Accept / Reject / Stop discovery dialog. Requirements and implementation details that belong inside the accepted feature are not promoted into separate registry rows.
+
+## Related features after `/scopeseed feat`
+
+A feature added explicitly with `/scopeseed feat ...` is treated as the accepted base feature. When related-feature review finds another independent product capability, ScopeSeed presents:
+
+- **Accept** to add the related feature;
+- **Reject** to record it as rejected;
+- **Stop related review** to keep the base feature and end only the related-feature review without recording a decision about the pending candidate.
+
+With `interaction.continue_after_dialog.feat: true`, ScopeSeed can walk through several related candidates in one run.
+
 ## Other dialogs
 
 ScopeSeed also prefers dialogs for finite choices such as:
@@ -44,6 +56,9 @@ interaction:
     verify: true
     plan: false
     implement: false
+
+workflow:
+  review_related_features: true
 ```
 
 `dialogs: prefer` uses the OpenCode question UI when it is available. Set it to `text` if you prefer normal chat prompts.
@@ -60,7 +75,9 @@ means ScopeSeed applies your Accept/Reject choice and then stops, so you explici
 
 Setting it to `true` means the current action resumes immediately after your answer. It never authorizes a different phase: discovery cannot start planning, and planning cannot start implementation.
 
-Projects created by older ScopeSeed versions may not contain an `interaction` block. Missing interaction keys use the current defaults above, so updating the plugin is enough to get the new behavior. Add the block only when you want project-specific overrides.
+`workflow.review_related_features: false` disables the post-acceptance decomposition/neighborhood review entirely.
+
+Projects created by older ScopeSeed versions may not contain these newer keys. ScopeSeed's config synchronization can add them conservatively while preserving existing values and project-owned lists.
 
 ## Clarification loops
 
