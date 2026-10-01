@@ -1,6 +1,6 @@
 {
   "name": "opencode-scopeseed",
-  "version": "2026.1.0-dev.5",
+  "version": "2026.1.0-dev.6",
   "description": "Project-level feature discovery and lifecycle orchestration over Spec Kit for OpenCode.",
   "type": "module",
   "main": "./plugin/index.js",
