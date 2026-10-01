@@ -34,6 +34,7 @@ Use a dialog when it improves a real choice, including:
 
 - disambiguating similarly named products, libraries, protocols, or repositories;
 - accepting or rejecting discovered feature candidates;
+- reviewing independent related features exposed by a newly accepted/manual feature;
 - choosing among plausible owning specs/features;
 - reconsidering a previously rejected feature;
 - selecting among concrete clarification options;
@@ -54,7 +55,19 @@ Present each feature candidate with exactly these primary actions:
 
 `Stop discovery` is not a rejection or deferral record. Because no durable decision is recorded, the same candidate may legitimately appear in a later discovery run.
 
+When an accepted discovery candidate exposes independent related features and `workflow.review_related_features` is enabled, those related candidates use the same three actions. `Stop discovery` stops both the related review and the enclosing discovery run.
+
 If custom answers are enabled, interpret them explicitly instead of guessing whether they mean accept or reject. For example, “accept but split this into two features” requires applying that instruction, not silently pressing Accept.
+
+## Related-feature dialog after `/scopeseed feat`
+
+A manually requested feature is already accepted once the normal `feat` checks pass. If its boundary review exposes an independent related feature, present that related candidate with:
+
+- **Accept** — add the related feature to `FEATURES.md` and, when enabled, review its own boundary.
+- **Reject** — record the related candidate in `REJECTED_FEATURES.md` using the normal rejection-reason rules.
+- **Stop related review** — keep the manually added base feature, leave the current related candidate unrecorded, and finish the current `feat` action.
+
+`Stop related review` is not a rejection. The same candidate may be rediscovered later.
 
 ## Continue-after-dialog
 
@@ -65,7 +78,8 @@ If custom answers are enabled, interpret them explicitly instead of guessing whe
 
 This setting does not authorize a different action. In particular:
 
-- `discover: true` may continue to the next candidate, but may not start feature clarification or planning;
+- `discover: true` may continue through related candidates and then broader discovery, but may not start feature clarification or planning;
+- `feat: true` may continue the related-feature review for the manually added feature, but may not enter that feature's clarification workflow;
 - `clarify: true` may ask the next clarification question for the current feature; moving to another feature additionally obeys `workflow.auto_continue_to_next_feature`;
 - `plan: true` may resume the current planning action after a resolved dialog, but may not begin implementation;
 - `implement: true` may resume the explicitly invoked implementation action, but may not silently implement another feature unless separate project configuration explicitly permits it.
