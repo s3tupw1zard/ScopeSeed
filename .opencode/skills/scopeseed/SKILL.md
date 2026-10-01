@@ -1,8 +1,8 @@
 ---
 name: scopeseed
-description: Project-level feature discovery and lifecycle orchestration over Spec Kit, using human-readable registries, evidence-first research, adaptive clarification, interactive decisions, config reconciliation, and resumable status gates.
+description: Project-level feature discovery and lifecycle orchestration over Spec Kit, using human-readable registries, evidence-first research, adaptive clarification, interactive decisions, config reconciliation, related-feature review, and resumable status gates.
 metadata:
-  version: 2026.1.0-dev.5
+  version: 2026.1.0-dev.6
   updated: 2026-10-01
 ---
 
@@ -14,7 +14,7 @@ ScopeSeed turns an incomplete project idea into an ordered, researched feature r
 
 ScopeSeed is project-agnostic. Do not assume a language, framework, platform, product type, or agent stack unless the target repository establishes it.
 
-Spec Kit remains the underlying feature specification/planning workflow. ScopeSeed adds project bootstrap, feature discovery, accepted/rejected feature memory, lifecycle ordering, interactive decision handling, configuration reconciliation, and resumable project-level orchestration.
+Spec Kit remains the underlying feature specification/planning workflow. ScopeSeed adds project bootstrap, feature discovery, accepted/rejected feature memory, feature-boundary review, lifecycle ordering, interactive decision handling, configuration reconciliation, and resumable project-level orchestration.
 
 ## Durable state
 
@@ -73,6 +73,8 @@ When the user is choosing among finite meaningful options and OpenCode's questio
 
 For feature discovery, the primary actions are **Accept**, **Reject**, and **Stop discovery**. `Stop discovery` ends the current discovery run without accepting or rejecting the candidate and without writing a registry entry for it.
 
+For related-feature review started by `/scopeseed feat`, use **Accept**, **Reject**, and **Stop related review**. Stopping related review keeps the manually added base feature and records no decision about the pending related candidate.
+
 After a dialog answer, `interaction.continue_after_dialog.<action>` decides whether the current ScopeSeed action continues automatically. This never authorizes a different action or bypasses safety boundaries.
 
 Read `references/interaction.md` for the complete behavior.
@@ -114,6 +116,12 @@ Before presenting a candidate, check accepted overlap, rejected-feature memory, 
 
 Use the discovery dialog behavior from `references/discovery.md`. On acceptance allocate the next stable `Fxxx` ID and keep the registry sorted. On rejection allocate the next stable `Rxxx` ID and record the reason/reconsideration condition. On **Stop discovery**, record neither.
 
+When `workflow.review_related_features` is enabled, every newly accepted feature gets a short feature-boundary/decomposition review before broad discovery continues. Classify adjacent concerns as owned requirements, independent related features, already-covered concerns, or implementation details. Only independent related features become new candidates. Never split a feature merely because its implementation has multiple endpoints, transports, classes, widgets, or libraries.
+
+Related candidates discovered during `/scopeseed discover` use the same Accept/Reject/Stop discovery loop. When discovery auto-continuation is enabled, exhaust meaningful related candidates first and then resume broad discovery.
+
+Read `references/discovery.md`.
+
 ## Manual feature addition
 
 Action: `feat`
@@ -121,6 +129,10 @@ Action: `feat`
 Treat remaining arguments as a feature the user intends to add. Check accepted overlap and previous rejection first. Derive a concise name, short description, fuller human-readable description, category, and genuine hard dependencies, then allocate the next stable feature ID and insert it in the registry.
 
 Use a dialog when duplicate/overlap/reconsideration creates a bounded user choice. Do not create a full Spec Kit spec unless clarification is starting.
+
+When `workflow.review_related_features` is enabled, immediately review the newly added feature boundary for independent adjacent/sub-features. Keep requirements and implementation details inside the base feature; only coherent capabilities that can sensibly own a separate Spec Kit lifecycle become related candidates. Present related candidates one at a time with **Accept**, **Reject**, and **Stop related review**. `interaction.continue_after_dialog.feat` controls whether the related review continues automatically after each answer.
+
+Read `references/discovery.md` for decomposition and related-candidate rules.
 
 ## Existing Spec Kit import
 
@@ -220,6 +232,7 @@ At the end of an action report concisely:
 - feature ID/name when applicable;
 - durable files changed;
 - lifecycle status affected;
+- related-feature review result when it ran;
 - unresolved decision/research limitation;
 - natural next `/scopeseed ...` command when the workflow stopped.
 
