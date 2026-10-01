@@ -4,10 +4,11 @@ import { fileURLToPath } from "node:url"
 
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "..")
 const skillRoot = join(packageRoot, ".opencode", "skills", "scopeseed")
+const skillFile = join(skillRoot, "SKILL.md")
 
 const read = (path) => readFileSync(path, "utf8")
 
-const core = read(join(skillRoot, "SKILL.md"))
+const core = read(skillFile)
 
 const referenceFiles = [
   "artifacts.md",
@@ -19,41 +20,58 @@ const referenceFiles = [
 ]
 
 const references = referenceFiles
-  .map((name) => `\n\n---\n\n# ScopeSeed reference: ${name}\n\n${read(join(skillRoot, "references", name))}`)
+  .map(
+    (name) =>
+      `\n\n---\n\n# ScopeSeed reference: ${name}\n\n${read(join(skillRoot, "references", name))}`,
+  )
   .join("")
 
-const commandTemplate = `You are running ScopeSeed through the installed OpenCode plugin.
+const skillContent = `${core}\n\n# Bundled ScopeSeed reference material${references}`
 
-The ScopeSeed operating instructions and bundled reference material below are authoritative for this command. Apply them to the current repository together with the repository's own governance and Spec Kit state. Do not assume optional integrations such as OMO-Slim, OpenViking, GitHub tooling, or project-specific MCP servers are installed; use them only when they are actually available.
+const commandPrefix = `Use the installed ScopeSeed skill to run the requested ScopeSeed workflow in the current repository.
 
-${core}
+Treat ScopeSeed's durable project files and the repository's own governance and Spec Kit state as authoritative. Do not assume optional integrations such as OMO-Slim, OpenViking, GitHub tooling, or project-specific MCP servers are installed; use them only when they are actually available.
 
-# Bundled ScopeSeed reference material
-${references}
+Current ScopeSeed invocation arguments:`
 
-# Current invocation
+const normalizeArguments = (text = "") =>
+  text.trim().replace(/^\/?scopeseed(?:\s+|$)/i, "").trim()
 
-The user invoked ScopeSeed with these arguments:
+export default {
+  id: "scopeseed",
 
-\`\`\`text
-$ARGUMENTS
-\`\`\`
-
-Interpret the invocation according to the ScopeSeed action rules above. If no action was supplied, use the default clarification workflow. Keep durable project state in the repository artifacts defined by ScopeSeed, not in hidden conversational state.`
-
-export default async function ScopeSeedPlugin() {
-  return {
-    config(config) {
-      config.command ??= {}
-
-      // Respect an explicit project/user override if one already exists.
-      if (!config.command.scopeseed) {
-        config.command.scopeseed = {
+  async setup(ctx) {
+    await ctx.skill.transform((editor) => {
+      if (!editor.get("scopeseed")) {
+        editor.add({
+          id: "scopeseed",
+          name: "ScopeSeed",
           description:
-            "Bootstrap, discover, clarify, verify, plan, or implement a ScopeSeed workflow over Spec Kit.",
-          template: commandTemplate,
-        }
+            "Project-level feature discovery and lifecycle orchestration over Spec Kit.",
+          location: skillFile,
+          content: skillContent,
+          autoinvoke: false,
+        })
       }
-    },
-  }
+    })
+
+    await ctx.command.transform((editor) => {
+      editor.add({
+        name: "scopeseed",
+        description:
+          "Bootstrap, discover, clarify, verify, plan, or implement a ScopeSeed workflow over Spec Kit.",
+        execute: async ({ sessionID, prompt, delivery }) => {
+          const args = normalizeArguments(prompt.text)
+          const invocation = args || "(no arguments: use the default clarification workflow)"
+
+          await ctx.session.prompt({
+            ...prompt,
+            sessionID,
+            text: `${commandPrefix}\n\n\`\`\`text\n${invocation}\n\`\`\`\n\nLoad and follow the ScopeSeed skill. If no explicit action was supplied, use the default clarification workflow. Keep durable project state in ScopeSeed's repository artifacts rather than hidden conversational state.`,
+            delivery,
+          })
+        },
+      })
+    })
+  },
 }
