@@ -20,6 +20,8 @@ Discovery reads `PROJECT.md`, accepted features, rejected features, existing spe
 
 When dialogs are enabled, a candidate offers **Accept**, **Reject**, and **Stop discovery**. Stop ends this discovery run without recording the current candidate as accepted or rejected. By default, Accept or Reject immediately continues to the next candidate, so a long discovery pass can be reviewed without re-running the command after every choice.
 
+When `workflow.review_related_features` is enabled, every accepted candidate is also checked for independent adjacent/sub-features before broad discovery resumes. ScopeSeed keeps ordinary requirements and implementation details inside the accepted feature and only proposes related capabilities that can sensibly own a separate Spec Kit lifecycle.
+
 ## `/scopeseed feat <description>`
 
 Adds a feature you already know you want.
@@ -29,6 +31,8 @@ Adds a feature you already know you want.
 ```
 
 ScopeSeed checks duplicate/overlapping accepted features and previous rejections, then assigns a stable feature ID, category, descriptions, dependencies, and registry position. If an overlap or previous rejection creates a real bounded choice, ScopeSeed may use a dialog.
+
+With `workflow.review_related_features: true`, ScopeSeed then reviews the new feature boundary for independent related features. Related candidates are shown one at a time with **Accept**, **Reject**, and **Stop related review**. `interaction.continue_after_dialog.feat` controls whether this review continues automatically after each answer. Stopping the related review keeps the manually added feature and records no decision about the pending related candidate.
 
 ## `/scopeseed import-specs <path>`
 
