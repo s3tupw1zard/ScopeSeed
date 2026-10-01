@@ -2,6 +2,8 @@
 
 ScopeSeed keeps the everyday command surface small. Commands should infer ordinary state from the repository and ask only when inference would be unsafe. Finite choices use OpenCode dialogs when available and enabled; see [Dialogs and automatic continuation](interactions.md).
 
+Before every action, ScopeSeed also checks `.scopeseed/config.yaml` against the installed config schema and additively fills missing keys when safe. Existing values and lists are preserved. See [Configuration](configuration.md).
+
 ## `/scopeseed bootstrap`
 
 Initializes ScopeSeed for a project.
@@ -37,6 +39,24 @@ Builds or extends the feature registry from an existing Spec Kit specification d
 ```
 
 Existing ownership is preserved. Ambiguous ownership/duplicate conflicts may use dialogs; file existence alone never proves lifecycle status.
+
+## `/scopeseed config-sync`
+
+Explicitly reconciles `.scopeseed/config.yaml` with the canonical config bundled with the installed ScopeSeed version.
+
+```text
+/scopeseed config-sync
+```
+
+The shorter alias also works:
+
+```text
+/scopeseed config
+```
+
+Only missing mapping keys and supported schema-version changes are applied automatically. Existing values, project-specific lists, and custom keys remain untouched. Invalid YAML, incompatible value types, and configs from a newer schema are reported instead of rewritten.
+
+This command works even when `maintenance.auto_sync_config` is disabled. It does not discover features or enter another lifecycle phase.
 
 ## `/scopeseed`
 
