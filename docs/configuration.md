@@ -21,7 +21,7 @@ The update is intentionally conservative:
 
 After a successful schema migration, ScopeSeed updates the top-level `version` field.
 
-For example, a project created before dialog settings existed can start with:
+For example, a project created before dialog or related-feature settings existed can start with:
 
 ```yaml
 version: 1
@@ -31,6 +31,33 @@ workflow:
 ```
 
 After updating ScopeSeed, the missing current settings can be inserted while the project's existing workflow value remains unchanged.
+
+## Related-feature review
+
+Current configs include:
+
+```yaml
+workflow:
+  review_related_features: true
+```
+
+When enabled, every feature newly accepted through `/scopeseed discover` or `/scopeseed feat` gets a short boundary/decomposition review. ScopeSeed distinguishes:
+
+- requirements that belong inside that feature's own future/current spec;
+- independent related capabilities that deserve their own feature entry;
+- already-covered or rejected concerns;
+- implementation details that should not become feature rows.
+
+Only independent product capabilities are proposed as related features.
+
+For discovery, related candidates use the normal `Accept` / `Reject` / `Stop discovery` dialog. For a manual `/scopeseed feat`, they use `Accept` / `Reject` / `Stop related review`.
+
+Automatic continuation is still controlled by the command-specific settings under `interaction.continue_after_dialog`. Disable the review entirely with:
+
+```yaml
+workflow:
+  review_related_features: false
+```
 
 ## Disable automatic writes
 
@@ -70,6 +97,6 @@ It does not discover features, change specs, plan work, implement code, or perfo
 
 ## Current schema
 
-A newly bootstrapped project starts from the current canonical template shipped with ScopeSeed. The template includes paths, feature-ID formatting, interaction/dialog settings, workflow gates, maintenance settings, and default category ordering hints.
+A newly bootstrapped project starts from the current canonical template shipped with ScopeSeed. The template includes paths, feature-ID formatting, interaction/dialog settings, workflow gates, related-feature review, maintenance settings, and default category ordering hints.
 
 The category list is a starting point, not a mandatory taxonomy. Once a project has its own category list, automatic config migration treats that list as user-owned and does not append future generic defaults to it.
