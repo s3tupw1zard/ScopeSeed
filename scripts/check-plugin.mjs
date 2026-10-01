@@ -40,5 +40,9 @@ await commandDefinition.execute({
 assert.equal(prompted?.sessionID, "session-test")
 assert.match(prompted?.text ?? "", /bootstrap/)
 assert.match(prompted?.text ?? "", /ScopeSeed/)
+assert.match(prompted?.text ?? "", /Canonical ScopeSeed config template/)
+assert.match(prompted?.text ?? "", /version:\s*2/)
+assert.match(prompted?.text ?? "", /auto_sync_config:\s*true/)
+assert.match(prompted?.text ?? "", /additive missing-key migration/)
 
 console.log("ScopeSeed OpenCode v2 command plugin shape OK")
