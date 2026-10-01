@@ -27,6 +27,55 @@ A useful candidate is a coherent product capability that can eventually own a Sp
 - a feature already implied and fully owned by an accepted feature;
 - generic best-practice filler with no connection to the project goal.
 
+## Feature-boundary and related-feature review
+
+When `workflow.review_related_features` is enabled, every newly accepted feature — whether it came from `/scopeseed discover` or `/scopeseed feat` — gets a short decomposition/neighborhood review before the action finishes or returns to broad discovery.
+
+The purpose is to find independent product capabilities that are easy to hide inside a broad feature name without turning implementation details into fake features.
+
+For the accepted feature, inspect the project brief, accepted/rejected registries, relevant specs/research, repository evidence, and authoritative external documentation when useful. Classify adjacent concerns into exactly one of these buckets:
+
+1. **Owned requirement** — behavior that belongs inside the accepted feature's future/current `spec.md`.
+2. **Independent related feature** — a coherent product capability that can sensibly own its own spec and lifecycle.
+3. **Already covered** — duplicate/overlap with an accepted or rejected feature.
+4. **Implementation detail** — protocol/library/internal mechanism that does not deserve a product feature row by itself.
+
+Only bucket 2 becomes a new candidate.
+
+Useful signals that something is an independent related feature include one or more of:
+
+- it delivers user value independently of the parent feature;
+- it can reasonably be specified, planned, implemented, permissioned, or released independently;
+- it has materially distinct actors, permissions, data, destructive behavior, offline/error states, or UX;
+- other accepted features depend on it directly;
+- removing it would still leave the parent feature coherent.
+
+Do **not** split merely because an implementation has separate classes, endpoints, transports, widgets, background jobs, or libraries. For example, websocket reconnect logic may remain an owned requirement of a realtime-console feature, while server power controls may deserve their own feature if they have independent permissions, confirmations, and flows.
+
+Before presenting a related candidate, run the normal duplicate/rejection/dependency checks. Related-review recursion must converge: do not repeatedly revisit the same covered concern under new wording.
+
+### Related candidates after `/scopeseed discover`
+
+Use the normal discovery dialog:
+
+- **Accept** — add the related feature and review its own boundary if enabled.
+- **Reject** — record the rejection normally.
+- **Stop discovery** — stop the entire current discovery run without recording the pending related candidate.
+
+When `interaction.continue_after_dialog.discover` is true, continue through related candidates first, then return to broader discovery once no meaningful related candidates remain.
+
+### Related candidates after `/scopeseed feat`
+
+The manually requested base feature is already accepted. For each independent related candidate, offer:
+
+- **Accept** — add the related feature and continue its boundary review when enabled.
+- **Reject** — record the related candidate as rejected with the normal reason rules.
+- **Stop related review** — keep the base feature, leave the pending related candidate unrecorded, and finish the current `feat` action.
+
+`Stop related review` is not a rejection. The candidate may appear again in a future discovery pass.
+
+When `interaction.continue_after_dialog.feat` is true, keep presenting meaningful related candidates until none remain or the user stops the related review.
+
 ## Candidate presentation
 
 Present one meaningful candidate at a time by default. Include:
@@ -58,9 +107,10 @@ On acceptance:
 - write both short and fuller descriptions;
 - record only genuine hard dependencies;
 - leave lifecycle boxes unchecked;
-- do not create a detailed spec unless clarification starts now.
+- do not create a detailed spec unless clarification starts now;
+- when enabled, run the feature-boundary/related-feature review before considering the accepted feature fully processed for the current action.
 
-If `interaction.continue_after_dialog.discover` is true, immediately research/recompute and present the next meaningful candidate. Do not require the user to invoke `/scopeseed discover` again between candidates.
+If `interaction.continue_after_dialog.discover` is true, immediately research/recompute and present the next meaningful candidate after related-feature review completes. Do not require the user to invoke `/scopeseed discover` again between candidates.
 
 ## Rejection
 
