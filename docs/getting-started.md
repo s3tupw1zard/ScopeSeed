@@ -4,16 +4,13 @@ ScopeSeed helps when you know what kind of project you want, but you do not yet 
 
 ## 1. Install the prerequisites
 
-The current reference integration runs inside OpenCode and expects Spec Kit to already be installed in the target repository.
+Install Spec Kit in the target repository, then install the ScopeSeed OpenCode plugin:
 
-Copy these ScopeSeed files into the target repository:
-
-```text
-.opencode/commands/scopeseed*.md
-.opencode/skills/scopeseed/
+```bash
+opencode plugin add github:s3tupw1zard/ScopeSeed
 ```
 
-The files under `examples/opencode/` are optional examples, not required configuration.
+Optional OMO-Slim, long-term memory, GitHub, web research, and project-specific MCP integrations can improve research but are not required.
 
 ## 2. Bootstrap a new project
 
@@ -23,15 +20,13 @@ Run:
 /scopeseed bootstrap
 ```
 
-If ScopeSeed cannot find an existing project brief or feature registry, it asks what you want to build. Answer naturally. A sentence is enough.
-
-Example:
+If ScopeSeed cannot find project state, it asks what you want to build. A sentence is enough, for example:
 
 ```text
 I want to build a cross-platform music player that works well with a local library.
 ```
 
-ScopeSeed then inspects the repository, identifies important terms, and researches the domain when research tools are available. If a name could refer to multiple products or technologies, it asks you to choose before continuing. It should never resolve meaningful identity ambiguity by guessing.
+ScopeSeed inspects the repository and researches the domain. When a name could refer to multiple products or technologies, it prefers an OpenCode selection dialog so you can choose the intended one before research continues.
 
 Bootstrap creates or updates:
 
@@ -42,29 +37,31 @@ specs/REJECTED_FEATURES.md
 .scopeseed/config.yaml
 ```
 
-It then performs an initial feature-discovery pass.
+and starts an initial discovery pass.
 
 ## 3. Review feature candidates
 
-Discovery proposes features because they appear relevant to the project; it does not silently add every plausible idea.
+Discovery proposes relevant features; it does not silently add them. In OpenCode, each candidate normally presents three actions:
 
-For each meaningful candidate you can accept or reject it. Accepted features go into `specs/FEATURES.md`. Rejected features go into `specs/REJECTED_FEATURES.md` together with the reason, so later research does not keep suggesting the same idea without new evidence.
+- **Accept** — add it to `FEATURES.md`.
+- **Reject** — record it in `REJECTED_FEATURES.md` with the reason.
+- **Stop discovery** — stop reviewing candidates without accepting or rejecting the current one.
 
-You can run another discovery pass at any time:
+By default, ScopeSeed continues directly to another candidate after Accept or Reject. You can therefore review many missing features without repeatedly typing `/scopeseed discover`.
+
+Run discovery later at any time with:
 
 ```text
 /scopeseed discover
 ```
 
-If you already know a feature you want, add it directly:
+Or add a known feature directly:
 
 ```text
 /scopeseed feat OAuth2 authentication
 ```
 
-ScopeSeed still checks for duplicates, overlap, and a previous rejection before adding it.
-
-## 4. Clarify the accepted features
+## 4. Clarify accepted features
 
 Run:
 
@@ -72,13 +69,11 @@ Run:
 /scopeseed
 ```
 
-ScopeSeed chooses the next eligible feature from `FEATURES.md`, respecting dependencies and category ordering. It creates or resolves the owning Spec Kit spec, researches answerable gaps, and asks one unresolved product decision at a time.
+ScopeSeed chooses the next eligible feature, creates/resolves its owning Spec Kit spec, researches answerable gaps, and asks one unresolved product decision at a time. Finite choices use dialogs when available; open-ended choices remain normal text.
 
-You answer in the chat. ScopeSeed writes the accepted answer into the owning `spec.md` immediately, recomputes the remaining gaps, and asks the next meaningful question.
+Each accepted answer is written into the owning `spec.md` immediately. With the default continuation setting, ScopeSeed then recomputes the remaining gaps and can present the next question without another command.
 
-When the feature has no material ambiguity left and an independent verification passes, ScopeSeed checks **Gapless** for that feature.
-
-If the session ends, run `/scopeseed` again. The repository files are the state; you do not need the old chat transcript to continue.
+When no material ambiguity remains and independent verification passes, ScopeSeed checks **Gapless** for that feature.
 
 ## 5. Plan features
 
@@ -88,32 +83,40 @@ After one or more features are gapless:
 /scopeseed plan
 ```
 
-ScopeSeed selects an eligible unplanned feature and runs the Spec Kit planning path, including the requirements-quality and cross-artifact gates configured by ScopeSeed. A successful run checks **Planned**.
-
-Planning does not automatically start implementation.
+ScopeSeed selects an eligible feature and runs the Spec Kit planning path. A successful full gate checks **Planned**. Planning never automatically starts implementation.
 
 ## 6. Implement features
 
-Implementation is always an explicit step:
+Implementation is always explicit:
 
 ```text
 /scopeseed implement
 ```
 
-ScopeSeed selects an eligible planned feature, invokes the canonical Spec Kit implementation workflow, and runs the configured convergence/verification gate. Only a successful implementation marks **Implemented**.
+ScopeSeed invokes canonical Spec Kit implementation and configured convergence/verification. Only successful completion checks **Implemented**.
 
 ## Existing Spec Kit projects
 
-If a repository already has feature specs, import them instead of rebuilding the registry manually:
+Adopt existing specs with:
 
 ```text
 /scopeseed import-specs specs/
 ```
 
-The import reads the existing specs and creates registry entries. It does not assume that a spec is gapless just because the file exists, or that a feature is planned merely because `plan.md` exists. Status must be supported by the corresponding workflow evidence.
+ScopeSeed reconstructs registry entries without assuming lifecycle completion merely because artifacts exist.
 
-## Optional integrations
+## Configure dialogs and continuation
 
-ScopeSeed can use specialist agents, long-term context, GitHub, web research, and project-specific MCP servers when they are present. Nothing in the core registry format depends on them.
+The generated `.scopeseed/config.yaml` contains an `interaction` block. The most useful setting for large feature discovery runs is:
 
-See [Commands](commands.md) for the complete command behavior.
+```yaml
+interaction:
+  continue_after_dialog:
+    discover: true
+```
+
+Set it to `false` if you want ScopeSeed to stop after each candidate decision. You can independently configure bootstrap, feature addition, imports, clarification, verification, planning, and implementation.
+
+Older projects without this block automatically use current defaults, so you do not have to regenerate their ScopeSeed state after updating the plugin.
+
+See [Dialogs and automatic continuation](interactions.md) and [Commands](commands.md) for details.

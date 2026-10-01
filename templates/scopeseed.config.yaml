@@ -11,6 +11,26 @@ feature_ids:
   rejected_prefix: R
   width: 3
 
+interaction:
+  # Prefer OpenCode's question/dialog UI for finite choices. Use `text` to
+  # force ordinary chat questions instead. Dialog unavailability always falls
+  # back to text rather than failing a workflow.
+  dialogs: prefer
+  allow_custom_answers: true
+
+  # Continue the currently invoked action after a dialog answer instead of
+  # requiring another `/scopeseed ...` command. These values never authorize a
+  # different action (for example, planning still cannot start implementation).
+  continue_after_dialog:
+    bootstrap: true
+    discover: true
+    feat: true
+    import_specs: true
+    clarify: true
+    verify: true
+    plan: false
+    implement: false
+
 workflow:
   clarification: adaptive-single-question
   auto_continue_to_next_feature: true

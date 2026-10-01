@@ -27,6 +27,8 @@ A good question includes:
 - a recommended default only when evidence supports one;
 - freedom to provide a custom answer.
 
+When the decision has a finite set of useful options and dialog UI is available/enabled, use the OpenCode question tool rather than asking the user to type an option label manually. Keep custom answers enabled unless verified constraints make the choice genuinely closed.
+
 Do not force a false multiple choice when a short free-form answer is clearer.
 
 ## After the answer
@@ -38,6 +40,8 @@ Immediately:
 3. recompute feature coverage;
 4. research any newly exposed factual gap;
 5. choose the next unresolved decision.
+
+If `interaction.continue_after_dialog.clarify` is true, continue this loop in the same invocation after a dialog answer. If it is false, apply the answer and stop with the next command. Moving automatically to another feature after this feature becomes gapless additionally obeys `workflow.auto_continue_to_next_feature`.
 
 The chat transcript is not the durable decision store.
 

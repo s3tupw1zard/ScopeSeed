@@ -29,18 +29,23 @@ A useful candidate is a coherent product capability that can eventually own a Sp
 
 ## Candidate presentation
 
-Present one meaningful candidate at a time by default:
+Present one meaningful candidate at a time by default. Include:
 
 ```text
 Candidate F? — <name>
 Category: <category>
-
 Short description: <one sentence>
 Why it may belong: <brief evidence-based reason>
 Likely dependencies: <IDs or none>
-
-Accept or reject?
 ```
+
+Then, when dialog UI is available and enabled, use the question tool with these primary options:
+
+- **Accept** — add the feature to the accepted registry.
+- **Reject** — reject it and record the reason.
+- **Stop discovery** — stop this discovery run without recording a decision about this candidate.
+
+If dialog UI is unavailable or disabled, present the same three choices in normal chat text.
 
 If recommending acceptance, state why. The recommendation is not acceptance.
 
@@ -55,6 +60,8 @@ On acceptance:
 - leave lifecycle boxes unchecked;
 - do not create a detailed spec unless clarification starts now.
 
+If `interaction.continue_after_dialog.discover` is true, immediately research/recompute and present the next meaningful candidate. Do not require the user to invoke `/scopeseed discover` again between candidates.
+
 ## Rejection
 
 On rejection:
@@ -63,7 +70,18 @@ On rejection:
 - record category, name, short description, rejection reason, date, and useful reconsideration condition;
 - do not keep presenting equivalent candidates under new names.
 
-When the user says only “no” and the reason is not obvious from established project constraints, ask for a short reason because the reason is what makes rejection memory useful.
+When the rejection reason is not safely implied by an explicit existing project decision, ask for a short reason. This may be free-form. After the reason is recorded, continue to the next candidate when discovery auto-continuation is enabled.
+
+## Stop discovery
+
+When the user chooses **Stop discovery**:
+
+- do not allocate an accepted or rejected ID;
+- do not add the current candidate to either registry;
+- do not treat the choice as a rejection or durable deferral;
+- stop the current discovery action immediately and report that discovery was paused.
+
+The unrecorded candidate may appear again in a future discovery run.
 
 ## Reconsideration
 
@@ -72,4 +90,4 @@ A rejected feature may be raised again only when:
 - the user explicitly asks to revisit it; or
 - new verified evidence directly weakens the recorded rejection reason.
 
-Always surface the previous rejection before changing the decision.
+Always surface the previous rejection before changing the decision. Use a dialog for the reconsider/keep-rejected choice when available and enabled.

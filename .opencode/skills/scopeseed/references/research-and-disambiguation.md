@@ -1,54 +1,46 @@
 # Research and disambiguation
 
-ScopeSeed should reduce user questions by researching facts, but research must begin from the correct subject.
+ScopeSeed should research facts before turning uncertainty into product questions.
 
 ## Resolve identity first
 
-Names are often ambiguous. A project name, library name, protocol acronym, or product name may refer to unrelated things.
+Before deep research, identify the external thing the user actually means. A project, product, protocol, library, company, game, framework, or service name may be ambiguous.
 
-Before deep research, ask whether the identity is sufficiently established by one or more of:
+When multiple plausible identities remain after a quick evidence check:
 
-- an authoritative URL supplied by the user;
-- a repository already referenced by the target project;
-- package/module coordinates;
-- vendor/organization name;
-- unambiguous context in existing accepted project artifacts.
+1. present the small set of plausible candidates with distinguishing information such as official website, repository, vendor, or purpose;
+2. when dialog UI is available/enabled, use the OpenCode question tool so the user can select the intended identity;
+3. otherwise ask the same bounded choice in normal chat text;
+4. do not continue domain research until the identity is resolved.
 
-If not, search for plausible candidates and present the smallest useful distinction. Do not hide uncertainty behind a confident guess.
+Do not guess based on popularity or search-result ordering.
 
-Example pattern:
+## Evidence priority
 
-```text
-I found two unrelated projects matching “Pelican”:
+Prefer primary/official documentation for factual behavior. Repository code/tests may be authoritative for the project's current behavior. Community sources can supply useful experience or candidate ideas but should not silently override official facts or accepted project decisions.
 
-A — <project A>, <authoritative URL>, short distinguishing description
-B — <project B>, <authoritative URL>, short distinguishing description
+Record only the amount of provenance needed to make durable project decisions understandable. ScopeSeed is not intended to turn every spec into a bibliography.
 
-Which one is the target of this project?
-```
+## Research before asking
 
-Once resolved, record the exact identity and source in `specs/PROJECT.md` so the same ambiguity does not recur.
+Researchable examples include:
 
-## Research depth
+- whether an external API supports an operation;
+- protocol/authentication behavior;
+- platform limitations;
+- current repository ownership and implementation state;
+- existing Spec Kit decisions;
+- whether a proposed feature duplicates existing scope.
 
-Bootstrap and discovery should research broadly enough to understand:
+User-owned examples include:
 
-- what the product/domain is;
-- primary actors and workflows;
-- external APIs/protocols/platform constraints;
-- security and identity boundaries;
-- common feature families;
-- important compatibility concerns;
-- comparable products or established patterns when they materially reveal missing scope.
+- whether the product should include an optional capability;
+- preferred behavior where multiple valid product choices remain;
+- acceptable destructive/recovery behavior when evidence does not dictate it;
+- scope boundaries and product priorities.
 
-Feature clarification should research narrowly around the current feature rather than repeating project-wide research.
-
-## Source quality
-
-Prefer official documentation, canonical repositories, standards, and direct implementation evidence. Community discussions can reveal usability problems or edge cases, but should not override authoritative protocol facts.
-
-Record durable sources only when they materially explain project identity, constraints, or a decision. Do not turn `PROJECT.md` into a bibliography dump.
+Use interactive dialogs for finite user-owned choices when useful. Keep genuinely open-ended product input as normal free-form questions.
 
 ## Research limitations
 
-If web or documentation access is unavailable, say which facts could not be verified. Do not convert every missing fact into a product preference question. Some gaps should remain explicitly research-blocked until evidence is available.
+If the necessary research tool or source is unavailable, say so. Do not manufacture a fact to avoid blocking. Decide whether the missing fact can be deferred safely; otherwise surface the limitation as a blocker.

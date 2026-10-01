@@ -12,6 +12,7 @@ const referenceFiles = [
   "artifacts.md",
   "clarification.md",
   "discovery.md",
+  "interaction.md",
   "lifecycle.md",
   "registry.md",
   "research-and-disambiguation.md",
@@ -34,6 +35,8 @@ const commandPrefix = `You are running ScopeSeed through the installed OpenCode 
 The bundled ScopeSeed instructions below are authoritative for this command together with the current repository's own governance and Spec Kit state.
 
 Do not assume optional integrations such as OMO-Slim, OpenViking, GitHub tooling, or project-specific MCP servers are installed. Use optional integrations only when they are actually available.
+
+When ScopeSeed needs a finite user choice and the OpenCode question tool is available, follow ScopeSeed's dialog policy and use that tool instead of requiring the user to type an option manually.
 
 ${bundledInstructions}
 
