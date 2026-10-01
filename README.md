@@ -20,6 +20,7 @@ ScopeSeed sits above [Spec Kit](https://github.com/github/spec-kit). Spec Kit re
 - group and order features by project-appropriate categories;
 - remember accepted **and rejected** features;
 - clarify one meaningful product decision at a time;
+- use OpenCode dialogs for finite choices when that is more convenient than typing replies;
 - keep `spec.md` as the durable source of truth for a feature;
 - track whether each feature is **Gapless**, **Planned**, and **Implemented**;
 - resume work from repository state instead of relying on one chat session;
@@ -93,7 +94,7 @@ The GitHub installation above follows the repository rather than pinning a speci
 
 The older project-local installer is still available for development and fallback use. See [Installation](docs/installation.md) for plugin, private-repository, update, and file-based installation details.
 
-See [Getting started](docs/getting-started.md) and the [command reference](docs/commands.md) for the detailed workflow.
+See [Getting started](docs/getting-started.md), [Dialogs and automatic continuation](docs/interactions.md), and the [command reference](docs/commands.md) for the detailed workflow.
 
 ## Project files
 
@@ -137,7 +138,9 @@ A memory of features the project deliberately decided not to include. Each rejec
 
 ScopeSeed combines the current project brief, repository state, accepted and rejected features, existing specs, official documentation, and available external research. It should distinguish similarly named products instead of guessing. For example, if a project name could refer to multiple unrelated products, ScopeSeed first presents the plausible identities and asks which one is meant.
 
-Feature candidates are evaluated against existing decisions before being shown. Accepted candidates are inserted into `FEATURES.md` in the appropriate category. Rejected candidates are recorded in `REJECTED_FEATURES.md` with the reason.
+When OpenCode's question UI is available, discovery presents **Accept**, **Reject**, and **Stop discovery** actions. The default configuration continues directly to the next candidate after Accept or Reject, so large feature sets can be reviewed without typing `/scopeseed discover` after every decision. **Stop discovery** ends the current run without recording the current candidate as accepted or rejected.
+
+Accepted candidates are inserted into `FEATURES.md` in the appropriate category. Rejected candidates are recorded in `REJECTED_FEATURES.md` with the reason.
 
 ## Feature ordering and categories
 
@@ -156,9 +159,10 @@ Instead it:
 1. researches anything that can be established from evidence;
 2. writes established facts into the owning Spec Kit spec;
 3. asks exactly one high-impact unresolved user decision;
-4. writes the accepted answer into `spec.md` immediately;
-5. recomputes what is still ambiguous;
-6. repeats until an independent completeness review finds no blocking gap.
+4. uses an interactive dialog for finite choices when useful;
+5. writes the accepted answer into `spec.md` immediately;
+6. recomputes what is still ambiguous;
+7. repeats until an independent completeness review finds no blocking gap.
 
 This keeps the spec as the single durable source of truth and makes interrupted sessions easy to resume.
 
@@ -172,6 +176,7 @@ ScopeSeed follows a few rules that are intentionally boring:
 
 - **Research before asking.** Do not make the user decide documented facts.
 - **Ask rather than guess.** Ambiguous product identity or ownership is a human gate.
+- **Use the best interaction for the choice.** Finite decisions should be easy to click; open-ended decisions should remain open-ended.
 - **One durable truth.** Accepted feature decisions live in the owning Spec Kit spec.
 - **Remember “no”.** Rejected ideas are project knowledge too.
 - **Readable by people.** Registries, project context, and documentation are normal Markdown first.
