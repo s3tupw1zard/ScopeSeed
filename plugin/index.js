@@ -7,10 +7,12 @@ const skillRoot = join(packageRoot, ".opencode", "skills", "scopeseed")
 
 const read = (path) => readFileSync(path, "utf8")
 const core = read(join(skillRoot, "SKILL.md"))
+const canonicalConfig = read(join(packageRoot, "templates", "scopeseed.config.yaml"))
 
 const referenceFiles = [
   "artifacts.md",
   "clarification.md",
+  "configuration.md",
   "discovery.md",
   "interaction.md",
   "lifecycle.md",
@@ -25,7 +27,7 @@ const references = referenceFiles
   )
   .join("")
 
-const bundledInstructions = `${core}\n\n# Bundled ScopeSeed reference material${references}`
+const bundledInstructions = `${core}\n\n# Bundled ScopeSeed reference material${references}\n\n---\n\n# Canonical ScopeSeed config template\n\n\`\`\`yaml\n${canonicalConfig}\n\`\`\``
 
 const normalizeArguments = (text = "") =>
   text.trim().replace(/^\/?scopeseed(?:\s+|$)/i, "").trim()
@@ -35,6 +37,8 @@ const commandPrefix = `You are running ScopeSeed through the installed OpenCode 
 The bundled ScopeSeed instructions below are authoritative for this command together with the current repository's own governance and Spec Kit state.
 
 Do not assume optional integrations such as OMO-Slim, OpenViking, GitHub tooling, or project-specific MCP servers are installed. Use optional integrations only when they are actually available.
+
+Before every ScopeSeed action, reconcile an existing .scopeseed/config.yaml against the bundled canonical config according to the configuration reference. This is an additive missing-key migration: preserve existing values, custom keys, and lists. Respect maintenance.auto_sync_config when it is explicitly false. An explicit config-sync action always requests reconciliation.
 
 When ScopeSeed needs a finite user choice and the OpenCode question tool is available, follow ScopeSeed's dialog policy and use that tool instead of requiring the user to type an option manually.
 
@@ -53,7 +57,7 @@ export default {
       editor.add({
         name: "scopeseed",
         description:
-          "Bootstrap, discover, clarify, verify, plan, or implement a ScopeSeed workflow over Spec Kit.",
+          "Bootstrap, discover, clarify, sync config, verify, plan, or implement a ScopeSeed workflow over Spec Kit.",
         execute: async ({ sessionID, prompt, delivery }) => {
           const args = normalizeArguments(prompt.text)
           const invocation =
