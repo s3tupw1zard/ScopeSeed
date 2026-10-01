@@ -1,4 +1,4 @@
-version: 2
+version: 3
 
 paths:
   project: specs/PROJECT.md
@@ -34,6 +34,13 @@ interaction:
 workflow:
   clarification: adaptive-single-question
   auto_continue_to_next_feature: true
+
+  # After a discovered or manually added feature is accepted, inspect its
+  # boundary for independent adjacent/sub-features that deserve their own
+  # registry entries. Requirements and implementation details stay inside the
+  # owning feature instead of being promoted automatically.
+  review_related_features: true
+
   planning_requires_gapless: true
   implementation_requires_planned: true
 
