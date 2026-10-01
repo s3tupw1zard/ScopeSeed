@@ -1,0 +1,75 @@
+# Configuration
+
+ScopeSeed stores project-specific settings in `.scopeseed/config.yaml`.
+
+You can edit this file by hand. ScopeSeed also keeps older configs compatible with newer plugin versions by adding newly introduced keys when it can do so safely.
+
+## Automatic updates
+
+At the start of every ScopeSeed command, the current config is compared with the canonical config bundled with the installed ScopeSeed version.
+
+The update is intentionally conservative:
+
+- missing mapping keys are added;
+- your existing values are kept;
+- custom/unknown keys are kept;
+- existing lists are kept as-is instead of being merged with defaults;
+- project-specific categories are therefore not replaced or padded with generic categories;
+- invalid YAML is never rewritten automatically;
+- incompatible type changes are reported instead of guessed;
+- a config from a newer schema version is not modified by an older ScopeSeed installation.
+
+After a successful schema migration, ScopeSeed updates the top-level `version` field.
+
+For example, a project created before dialog settings existed can start with:
+
+```yaml
+version: 1
+
+workflow:
+  auto_continue_to_next_feature: true
+```
+
+After updating ScopeSeed, the missing current settings can be inserted while the project's existing workflow value remains unchanged.
+
+## Disable automatic writes
+
+The current config schema contains:
+
+```yaml
+maintenance:
+  auto_sync_config: true
+```
+
+Set it to `false` if you want normal ScopeSeed commands to report config drift without modifying the file automatically:
+
+```yaml
+maintenance:
+  auto_sync_config: false
+```
+
+Older configs that do not contain this key are treated as if it were `true`, allowing ScopeSeed to add the newly introduced configuration fields once.
+
+## Force a synchronization
+
+Run:
+
+```text
+/scopeseed config-sync
+```
+
+or the shorter alias:
+
+```text
+/scopeseed config
+```
+
+This explicitly requests a missing-key/schema reconciliation even when automatic synchronization is disabled.
+
+It does not discover features, change specs, plan work, implement code, or perform Git operations.
+
+## Current schema
+
+A newly bootstrapped project starts from the current canonical template shipped with ScopeSeed. The template includes paths, feature-ID formatting, interaction/dialog settings, workflow gates, maintenance settings, and default category ordering hints.
+
+The category list is a starting point, not a mandatory taxonomy. Once a project has its own category list, automatic config migration treats that list as user-owned and does not append future generic defaults to it.
