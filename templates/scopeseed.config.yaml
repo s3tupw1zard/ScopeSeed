@@ -1,4 +1,4 @@
-version: 1
+version: 2
 
 paths:
   project: specs/PROJECT.md
@@ -36,6 +36,11 @@ workflow:
   auto_continue_to_next_feature: true
   planning_requires_gapless: true
   implementation_requires_planned: true
+
+maintenance:
+  # Existing configs are reconciled additively against newer ScopeSeed defaults.
+  # Existing values, custom keys, and lists are preserved.
+  auto_sync_config: true
 
 categories:
   # Default ordering hints. ScopeSeed should omit irrelevant categories and may
