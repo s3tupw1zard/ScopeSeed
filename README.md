@@ -8,7 +8,7 @@ You do **not** need to know every feature up front. ScopeSeed can start from a s
 
 It researches the project and its surrounding ecosystem, asks when an important term is ambiguous, proposes useful features, remembers rejected ideas, and keeps accepted work in a durable feature registry. From there it works through the project one feature at a time.
 
-> **Status:** early development. The workflow and file formats are intentionally readable and conservative so they can evolve without hiding project decisions in tool-specific state.
+> **Status:** public development prerelease. ScopeSeed is still WIP and has not yet had broad real-world validation. Use the `dev` npm dist-tag until a stable release is explicitly published.
 
 ## What ScopeSeed is for
 
@@ -49,7 +49,13 @@ The core workflow must still work without those optional integrations. When rese
 
 ## Quick start
 
-The recommended installation is the OpenCode package plugin:
+The recommended installation for prereleases is the npm package:
+
+```bash
+opencode plugin add opencode-scopeseed@dev
+```
+
+For repository-based development, the GitHub package source remains available:
 
 ```bash
 opencode plugin add github:s3tupw1zard/ScopeSeed
@@ -90,7 +96,7 @@ opencode plugin check
 opencode plugin update
 ```
 
-The GitHub installation above follows the repository rather than pinning a specific commit, so updating does not require copying ScopeSeed files into every project again.
+The npm installation follows the selected dist-tag. During prerelease development, `dev` advances independently from the future stable `latest` tag. The GitHub installation follows the repository rather than an npm release and is mainly useful for development.
 
 The older project-local installer is still available for development and fallback use. See [Installation](docs/installation.md) for plugin, private-repository, update, and file-based installation details.
 
