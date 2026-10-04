@@ -8,15 +8,21 @@ Install Spec Kit in the target repository first. ScopeSeed expects the canonical
 
 OpenCode is required for the integration in this repository. OMO-Slim, OpenViking, GitHub tooling, web research providers, and project-specific MCP servers are optional.
 
-## Recommended: install the OpenCode plugin
+## Recommended: install the npm prerelease
 
-Install ScopeSeed directly from its GitHub repository:
+Until ScopeSeed reaches a stable release, install the public npm package through the `dev` dist-tag:
+
+```bash
+opencode plugin add opencode-scopeseed@dev
+```
+
+This keeps the ScopeSeed runtime in OpenCode's package-plugin cache rather than copying ScopeSeed source files into the target repository.
+
+For development directly from the repository, use:
 
 ```bash
 opencode plugin add github:s3tupw1zard/ScopeSeed
 ```
-
-This keeps the ScopeSeed runtime in OpenCode's package-plugin cache rather than copying ScopeSeed source files into the target repository.
 
 After installation, restart OpenCode if the command is not visible immediately, then run:
 
@@ -38,11 +44,11 @@ Update installed package plugins:
 opencode plugin update
 ```
 
-Because the GitHub package target is not pinned to a commit, OpenCode can refresh ScopeSeed when the repository advances. If you intentionally pin ScopeSeed to a tag, version, or commit, that pin is treated as an explicit reproducibility choice rather than a moving installation.
+The npm `dev` tag tracks prerelease versions; a future stable release will use `latest`. Repository installs can advance independently from npm and therefore remain a development-oriented option.
 
 ### Private repository access
 
-If the ScopeSeed repository is private, the machine running OpenCode must already have Git credentials that can read it. A public release removes that requirement.
+GitHub-based installs from a private repository require Git credentials on the OpenCode host. The public npm package does not require repository access.
 
 ## What the plugin does
 
@@ -103,3 +109,25 @@ If the project already has Spec Kit specs and you want to adopt them instead of 
 ```text
 /scopeseed import-specs specs/
 ```
+
+
+## Maintainer: publishing to npm
+
+The package name is `opencode-scopeseed`. Prerelease versions use the existing CalVer-compatible SemVer form such as `2026.1.0-dev.6` and publish under the `dev` dist-tag. Stable versions publish under `latest`.
+
+Before any release:
+
+```bash
+npm run verify
+```
+
+The GitHub Actions workflow `.github/workflows/publish.yml` publishes a GitHub Release whose tag exactly matches `v<package.json version>`. It uses npm Trusted Publishing/OIDC and intentionally contains no long-lived npm token.
+
+The first package version must be published manually because npm requires the package to exist before its Trusted Publisher relationship can be configured. After that first publish, configure npm Trusted Publishing with:
+
+- GitHub owner: `s3tupw1zard`
+- repository: `ScopeSeed`
+- workflow filename: `publish.yml`
+- allow direct `npm publish`
+
+Then future GitHub Releases can publish through OIDC. Keep the release marked as a prerelease while the package version contains a prerelease suffix.
