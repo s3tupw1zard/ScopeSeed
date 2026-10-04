@@ -31,6 +31,10 @@
   ],
   "scripts": {
     "check": "node --check plugin/index.js && node scripts/check-plugin.mjs",
-    "pack:check": "npm pack --dry-run"
+    "pack:check": "npm pack --dry-run",
+    "verify": "npm run check && npm run pack:check"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
